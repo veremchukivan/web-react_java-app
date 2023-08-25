@@ -1,0 +1,10 @@
+.category-list {
+  >button {
+    margin-bottom: 30px;
+  }
+  table {
+    tr:hover {
+      cursor: pointer;
+    }
+  }
+}
