@@ -3,6 +3,7 @@ import './App.css'
 import CategoryCreatePage from './components/category/create/CategoryCreatePage';
 import CategoryEditPage from './components/category/edit/CategoryEditPage';
 import CategoryListPage from './components/category/list/CategoryListPage';
+import DefaultLayout from './components/containers/default/DefaultLayout';
 
 
 function App() {
@@ -10,9 +11,9 @@ function App() {
   return (
     <>
     <Routes>
-      <Route path="/">
+      <Route path="/" element={<DefaultLayout/>}>
         <Route index element={<CategoryListPage />} />
-        <Route path="category/create" element={<CategoryCreatePage />} />
+        <Route path="/create" element={<CategoryCreatePage />} />
         <Route path="category/edit/:id" element={<CategoryEditPage />} />
       </Route>
     </Routes>
