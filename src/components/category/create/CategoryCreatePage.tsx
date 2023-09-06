@@ -16,7 +16,7 @@ const CategoryCreatePage = () => {
     const onFormikSubmit = async (values: ICategoryCreate) => {
         try {
             await http_common.post(
-                "/category",
+                "api/categories",
                 values,
                 {
                     headers: {

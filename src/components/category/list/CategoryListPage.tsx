@@ -11,7 +11,7 @@ const CategoryListPage = () => {
 
     const getData = () => {
         http_common
-            .get<ICategoryItem[]>("/category")
+            .get<ICategoryItem[]>("api/categories")
             .then((resp) => {
                 //console.log("Categories", resp.data);
                 setList(resp.data);
@@ -21,15 +21,13 @@ const CategoryListPage = () => {
         getData();
     }, []);
 
-    const onHendlerDelete = async (id: number) => {
-        try {
-            await http_common.delete("/category/" + id);
-            getData();
-        } catch (error) {
-            console.log("Error Delete", error);
-        }
-        //console.log("Delete product: ", id);
-    };
+    const DeleteCategoryHandler = (id: number | string | undefined) => {
+        http_common
+          .delete(`api/categories/${id}`)
+          .then((resp) => {
+            setList(list.filter((x) => x.id !== id));
+          });
+      };
 
     const content = list.map((c) => {
         return (
@@ -48,7 +46,12 @@ const CategoryListPage = () => {
             </td>
             <td className="px-6 py-4">
                 <Link to={`category/edit/${c.id}`} className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">Змінить</Link>
-                <ModalDelete id={c.id} text={c.name} deleteFunc={onHendlerDelete} />
+                <ModalDelete
+          id={c.id}
+          deleteFunc={DeleteCategoryHandler}
+          title="Видалення товара"
+          text={`Ви дійсно бажаєте видалити категорію '${c.name}'?`}
+        />
           &nbsp; &nbsp;
             </td>
         </tr>

@@ -41,7 +41,7 @@ const CategoryEditPage = () => {
   const { values, handleChange, handleSubmit, setFieldValue } = formik;
 
   useEffect(() => {
-    http_common.get<ICategoryItem>(`category/${id}`).then((resp) => {
+    http_common.get<ICategoryItem>(`api/categories/${id}`).then((resp) => {
       const { data } = resp;
       setFieldValue("name", data.name);
       //setFieldValue("image", data.image);
