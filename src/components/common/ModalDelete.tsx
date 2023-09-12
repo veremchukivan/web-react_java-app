@@ -28,7 +28,7 @@ const ModalDelete: React.FC<Props> = ({ id, title, text, deleteFunc }) => {
       <button
         onClick={() => showModal()}
         type="button"
-        className="bg-transparent hover:bg-red-500 text-red-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+        className="bg-transparent  hover:bg-red-500 text-red-700 font-semibold hover:text-white py-2 px-4 mx-3 border border-blue-500 hover:border-transparent rounded"
       >
         Видалити
       </button>

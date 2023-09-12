@@ -5,6 +5,10 @@ import { IPorductEdit, IProductItem } from "../types";
 import { ICategoryItem } from "../../category/list/types";
 import http_common from "../../../http_common";
 import { APP_ENV } from "../../../env";
+import InputGroup from "../../common/InputGroup";
+import SelectGroup from "../../common/SelectGroup";
+import InputFileGroup from "../../common/InputFileGroup";
+import TextGroup from "../../common/TextGroup";
 
 const ProductEditPage = () => {
   const navigator = useNavigate();
@@ -25,39 +29,24 @@ const ProductEditPage = () => {
   const [categories, setCategories] = useState<Array<ICategoryItem>>([]);
 
   useEffect(() => {
-    http_common
-      .get<Array<ICategoryItem>>(`api/categories`)
-      .then((resp) => {
-        //console.log("resp = ", resp);
-        setCategories(resp.data);
-      });
+    http_common.get<Array<ICategoryItem>>(`api/categories`).then((resp) => {
+      //console.log("resp = ", resp);
+      setCategories(resp.data);
+    });
 
-      http_common
-      .get<IProductItem>(`api/products/${id}`)
-      .then((resp) => {
-        const { files, name, price, category_id, description } = resp.data;
-        setOldImages(files);
-        setModel({ ...model, name, price, description, category_id });
-        console.log("data", resp.data);
-      });
+    http_common.get<IProductItem>(`api/products/${id}`).then((resp) => {
+      const { files, name, price, category_id, description } = resp.data;
+      setOldImages(files);
+      setModel({ ...model, name, price, description, category_id });
+      console.log("data", resp.data);
+    });
   }, []);
-
-  const content = categories.map((category) => (
-    <option key={category.id} value={category.id}>
-      {category.name}
-    </option>
-  ));
-
   const onChangeHandler = (
-    e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>
+    e:
+      | ChangeEvent<HTMLInputElement>
+      | ChangeEvent<HTMLTextAreaElement>
+      | ChangeEvent<HTMLSelectElement>
   ) => {
-    //console.log("input", e.target);
-    setModel({ ...model, [e.target.name]: e.target.value });
-  };
-
-  const onChangeSelectHandler = (e: ChangeEvent<HTMLSelectElement>) => {
-    //console.log("input", e.target);
-    //console.log("input", e.target.value);
     setModel({ ...model, [e.target.name]: e.target.value });
   };
 
@@ -72,19 +61,15 @@ const ProductEditPage = () => {
   const onSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const result = await http_common.put(
-        `api/products/${id}`,
-        model,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
+      const result = await http_common.put(`api/products/${id}`, model, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
       navigator("/");
     } catch (e: any) {}
   };
 
   const filesContent = model.files.map((f, index) => (
-<div key={index} className="mb-4">
+    <div key={index} className="mb-4">
       <Link
         to="#"
         onClick={(e) => {
@@ -107,7 +92,6 @@ const ProductEditPage = () => {
         </div>
       </div>
     </div>
-
   ));
 
   const DataProductsOld = oldImages.map((product, index) => (
@@ -141,108 +125,41 @@ const ProductEditPage = () => {
       <h1 className="font-medium text-3xl">Зміна товару</h1>
       <form onSubmit={onSubmitHandler}>
         <div className="mt-8 grid lg:grid-cols-1 gap-4">
-          <div>
-            <label
-              htmlFor="name"
-              className="text-sm text-gray-700 block mb-1 font-medium"
-            >
-              Назва
-            </label>
-            <input
-              type="text"
-              name="name"
-              value={model.name}
-              onChange={onChangeHandler}
-              id="name"
-              className="bg-gray-100 border border-gray-200 rounded py-1 px-3 block focus:ring-blue-500 focus:border-blue-500 text-gray-700 w-full"
-              placeholder="Вкажіть назву"
-            />
-          </div>
+          <InputGroup
+            label={"Назва"}
+            value={model.name}
+            onChange={onChangeHandler}
+            field={"name"}
+          />
 
-          <div>
-            <label
-              htmlFor="price"
-              className="text-sm text-gray-700 block mb-1 font-medium"
-            >
-              Ціна
-            </label>
-            <input
-              type="number"
-              name="price"
-              value={model.price}
-              onChange={onChangeHandler}
-              id="price"
-              className="bg-gray-100 border border-gray-200 rounded py-1 px-3 block focus:ring-blue-500 focus:border-blue-500 text-gray-700 w-full"
-              placeholder="Вкажіть ціна"
-            />
-          </div>
+          <InputGroup
+            label={"Ціна"}
+            value={model.price}
+            onChange={onChangeHandler}
+            field={"price"}
+            type={"number"}
+          />
 
-          <div>
-            <label
-              htmlFor="countries"
-              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >
-              Оберіть категорію
-            </label>
-            <select
-              defaultValue={model.category_id}
-              onChange={onChangeSelectHandler}
-              id="category_id"
-              name="category_id"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            >
-              <option disabled>Виберіть категорію</option>
-              {content}
-            </select>
-          </div>
+          <SelectGroup
+            label={"Категорія"}
+            field={"category_id"}
+            onChange={onChangeHandler}
+            items={categories}
+          />
 
-          <div>
-            <label
-              htmlFor="description"
-              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >
-              Опис
-            </label>
-            <textarea
-              id="description"
-              name="description"
-              value={model.description}
-              onChange={onChangeHandler}
-              rows={4}
-              className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="Вкажіть опис..."
-            ></textarea>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Фото
-            </label>
-
-            <div className="mt-1 flex items-center">
-
-              <label
-                htmlFor="selectImage"
-                className="ml-5 rounded-md border border-gray-300 bg-white 
-                        py-2 px-3 text-sm font-medium leading-4 text-gray-700 
-                        shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 
-                        focus:ring-indigo-500 focus:ring-offset-2"
-              >
-                Додати фото
-              </label>
-            </div>
-
-            <div className="grid lg:grid-cols-8 md:grid-cols-6 sm:grid-cols-4 grid-cols-2 items-center gap-4">
-              {DataProductsOld}
-              {filesContent}
-            </div>
-            <input
-              type="file"
-              onChange={onFileChangeHandler}
-              id="selectImage"
-              className="hidden"
-            />
-          </div>
+          <TextGroup
+            label={"Опис"}
+            field={"description"}
+            onChange={onChangeHandler}
+            rows={4}
+          />
+          <InputFileGroup
+            label={"Фото"}
+            filesContent={filesContent}
+            onChange={onFileChangeHandler}
+            field={"selectImage"}
+            filesOldContent={DataProductsOld}
+          />
         </div>
         <div className="space-x-4 mt-8">
           <button
