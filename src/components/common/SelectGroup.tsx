@@ -1,5 +1,5 @@
 import {ChangeEvent, FC, InputHTMLAttributes} from "react";
-import { ICategoryItem } from "../category/list/types";
+import { ICategoryItem } from "../admin/category/list/types";
 
 
 
