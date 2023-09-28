@@ -1,30 +1,27 @@
+import "./App.scss";
+import CategoryList from "./components/admin/category/list/CategoryList.tsx";
 import { Navigate, Route, Routes } from "react-router-dom";
-import "./App.css";
-import CategoryCreatePage from "./components/admin/category/create/CategoryCreatePage";
-import CategoryEditPage from "./components/admin/category/edit/CategoryEditPage";
-import CategoryListPage from "./components/admin/category/list/CategoryListPage";
-import DefaultLayout from "./components/containers/default/DefaultLayout";
-import ProductCreatePage from "./components/admin/product/create/ProductCreatePage";
-import ProductListPage from "./components/admin/product/list/ProductListPage";
-import ProductEditPage from "./components/admin/product/edit/ProductEditPage";
-import LoginPage from "./components/auth/login/LoginPage";
-import RegisterPage from "./components/auth/register/RegisterPage";
-import AdminLayout from "./components/containers/admin/AdminLayout";
+import CategoryCreate from "./components/admin/category/create/CategoryCreate.tsx";
+import DefaultLayout from "./components/containers/default/DefaultLayout.tsx";
+import "flowbite";
+import CategoryEdit from "./components/admin/category/edit/CategoryEdit.tsx";
+import ProductList from "./components/admin/product/list/ProductList.tsx";
+import ProductCreate from "./components/admin/product/create/ProductCreate.tsx";
+import ProductEdit from "./components/admin/product/edit/ProductEdit.tsx";
+import RegisterPage from "./components/auth/register/RegisterPage.tsx";
+import AdminLayout from "./components/containers/default/AdminLayout.tsx";
+import { IAuthUser } from "./entities/Auth.ts";
 import { useSelector } from "react-redux";
-import { IAuthUser } from "./entities/Auth";
-import HomePage from "./home/HomePage";
+import Login from "./components/auth/login";
 
 function App() {
   const { user, isAuth } = useSelector((store: any) => store.auth as IAuthUser);
-  
+
   return (
-    <>
-      <Routes>
-        <Route path="/" element={<DefaultLayout />}>
-          <Route index element={<HomePage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-        </Route>
+    <Routes>
+      <Route path="/" element={<DefaultLayout />}>
+        <Route path="register" element={<RegisterPage />} />
+        <Route path="login" element={<Login />} />
         <Route
           path="/admin"
           element={
@@ -33,18 +30,21 @@ function App() {
             ) : (
               <AdminLayout />
             )
-          }>
-          <Route index element={<CategoryListPage />} />
-          <Route path="category/list" element={<CategoryListPage />} />
-          <Route path="/create" element={<CategoryCreatePage />} />
-          <Route path="category/edit/:id" element={<CategoryEditPage />} />
-          <Route path="products/create" element={<ProductCreatePage />} />
-          <Route path="products/list" element={<ProductListPage />} />
-          <Route path="products/edit/:id" element={<ProductEditPage />} />
+          }
+        >
+          <Route path="category">
+            <Route index element={<CategoryList />} />
+            <Route path="create" element={<CategoryCreate />} />
+            <Route path="edit/:id" element={<CategoryEdit />} />
+          </Route>
+          <Route path="product">
+            <Route index element={<ProductList />} />
+            <Route path="create" element={<ProductCreate />} />
+            <Route path="edit/:id" element={<ProductEdit />} />
+          </Route>
         </Route>
-      </Routes>
-    </>
+      </Route>
+    </Routes>
   );
 }
-
 export default App;

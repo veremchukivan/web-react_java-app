@@ -1,6 +1,6 @@
-body {
-  margin: 60px 120px;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 .back-button {
   font-size: 50px;
@@ -8,10 +8,4 @@ body {
   color: blue;
   height: 50px;
   width: 50px;
-}
-
-img {
-  width: 150px;
-  height: 150px;
-  object-fit: scale-down;
 }

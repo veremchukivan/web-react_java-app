@@ -1,16 +1,11 @@
-import { Form, Formik } from "formik";
-import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { IRegister } from "../../../entities/Auth.ts";
 import * as Yup from "yup";
-import InputGroup from "../../common/InputGroup";
-import http_common from "../../../http_common";
-import jwtDecode from "jwt-decode";
-import { useState } from "react";
-import { AuthUserActionType, IRegister, IUser } from "../../../entities/Auth";
-
+import http_common from "../../../http_common.ts";
+import { Form, Formik } from "formik";
+import InputGroup from "../../../common/InputGroup.tsx";
 
 function RegisterPage() {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const initialValues: IRegister = {
@@ -23,36 +18,19 @@ function RegisterPage() {
 
   const registerSchema = Yup.object().shape({
     email: Yup.string().required("Email is required").email("Invalid email"),
-    password: Yup.string().required("Password is required"),
-    firstName: Yup.string().required("First Name is required"),
-    lastName: Yup.string().required("Last Name is required"),
     phone: Yup.string().required("Phone number is required"),
+    password: Yup.string().required("Password is required"),
+    firstName: Yup.string().required("First name is required"),
+    lastName: Yup.string().required("Second name is required"),
   });
-
-  const [message, setMessage] = useState<string>("");
 
   const handleSubmit = async (values: IRegister) => {
     try {
-      const result = await http_common.post<{ token: string }>(
-        "api/account/register",
-        values
-      );
-      const { data } = result;
-      const token = data.token;
-      localStorage.token = token;
-      const user = jwtDecode(token) as IUser;
-      dispatch({
-        type: AuthUserActionType.LOGIN_USER,
-        payload: {
-          sub: user.sub,
-          email: user.email,
-          roles: user.roles,
-        },
-      });
-      setMessage("");
+      console.log(values);
+      await http_common.post("api/account/register", values);
       navigate("/");
-    } catch {
-      setMessage("Registration failed");
+    } catch (error) {
+      console.error("Error register:", error);
     }
   };
 
@@ -69,11 +47,6 @@ function RegisterPage() {
               className="bi bi-arrow-left-circle-fill back-button"
               onClick={() => navigate("..")}
             ></i>
-            {message && (
-              <div className="alert alert-danger" role="alert">
-                {message}
-              </div>
-            )}
             <InputGroup
               label="Email"
               type="email"
@@ -82,7 +55,7 @@ function RegisterPage() {
               error={errors.email}
               touched={touched.email}
               handleChange={handleChange}
-            />
+            ></InputGroup>
             <InputGroup
               label="Password"
               type="password"
@@ -91,25 +64,25 @@ function RegisterPage() {
               error={errors.password}
               touched={touched.password}
               handleChange={handleChange}
-            />
+            ></InputGroup>
             <InputGroup
-              label="First Name"
+              label="FirstName"
               type="text"
               field="firstName"
               handleBlur={handleBlur}
               error={errors.firstName}
               touched={touched.firstName}
               handleChange={handleChange}
-            />
+            ></InputGroup>
             <InputGroup
-              label="Last Name"
+              label="LastName"
               type="text"
               field="lastName"
               handleBlur={handleBlur}
               error={errors.lastName}
               touched={touched.lastName}
               handleChange={handleChange}
-            />
+            ></InputGroup>
             <InputGroup
               label="Phone"
               type="text"
@@ -118,7 +91,7 @@ function RegisterPage() {
               error={errors.phone}
               touched={touched.phone}
               handleChange={handleChange}
-            />
+            ></InputGroup>
             <button
               type="submit"
               className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"

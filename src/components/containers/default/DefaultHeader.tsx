@@ -1,9 +1,20 @@
 import { Link } from "react-router-dom";
+import { AuthUserActionType, IAuthUser } from "../../../entities/Auth.ts";
+import { useDispatch, useSelector } from "react-redux";
 
 const DefaultHeader = () => {
+  const dispatch = useDispatch();
+  const onLogoutHandler = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("access_token");
+    dispatch({ type: AuthUserActionType.LOGOUT_USER });
+  };
+
+  const { isAuth } = useSelector((store: any) => store.auth as IAuthUser);
+
   return (
     <>
-      <header>
+      <header className="mb-6">
         <nav className="bg-white border-gray-200 dark:bg-gray-900">
           <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
             <a href="https://flowbite.com/" className="flex items-center">
@@ -46,6 +57,14 @@ const DefaultHeader = () => {
                 </div>
                 <ul className="py-2" aria-labelledby="user-menu-button">
                   <li>
+                    <Link
+                      to={"/admin"}
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                    >
+                      Admin panel
+                    </Link>
+                  </li>
+                  <li>
                     <a
                       href="#"
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
@@ -69,14 +88,35 @@ const DefaultHeader = () => {
                       Earnings
                     </a>
                   </li>
-                  <li>
-                    <a
-                      href="#"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-                    >
-                      Sign out
-                    </a>
-                  </li>
+                  {isAuth ? (
+                    <li>
+                      <button
+                        onClick={onLogoutHandler}
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                      >
+                        Sign out
+                      </button>
+                    </li>
+                  ) : (
+                    <>
+                      <li>
+                        <Link
+                          to={"/login"}
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                        >
+                          Login
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          to={"/register"}
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                        >
+                          Register
+                        </Link>
+                      </li>
+                    </>
+                  )}
                 </ul>
               </div>
               <button
@@ -96,9 +136,9 @@ const DefaultHeader = () => {
                 >
                   <path
                     stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
                     d="M1 1h15M1 7h15M1 13h15"
                   />
                 </svg>
@@ -127,20 +167,20 @@ const DefaultHeader = () => {
                   </a>
                 </li>
                 <li>
-                  <Link
-                    to="/products/list"
+                  <a
+                    href="#"
                     className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
                   >
-                    Товари
-                  </Link>
+                    Services
+                  </a>
                 </li>
                 <li>
-                  <Link
-                    to="/category/list"
+                  <a
+                    href="#"
                     className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
                   >
-                    Категорії
-                  </Link>
+                    Pricing
+                  </a>
                 </li>
                 <li>
                   <a
