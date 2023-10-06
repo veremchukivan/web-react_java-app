@@ -1,4 +1,4 @@
-import "./CategoryCreate.scss";
+git import "./CategoryCreate.scss";
 import { ICategory, ICategoryCreate } from "../../../entities/Category.ts";
 import * as Yup from "yup";
 import { ErrorMessage, Field, Form, Formik } from "formik";
